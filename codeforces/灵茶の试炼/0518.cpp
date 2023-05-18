@@ -21,6 +21,8 @@ const LL LINF = 0x3f3f3f3f3f3f3f3f;
 const int MOD = 1e9 + 7;
 const int N = 200010;
 
+
+// 值域倒序
 void solve() {
     int n; cin >> n;
     vector<int> b(n), pos(n+1);
@@ -44,6 +46,46 @@ void solve() {
     cout << endl;
 }
 
+
+// 并查集
+void solve2() {
+    int n; cin >> n;
+    vector<int> b(n+1), p(n+1), cnt(n+1);
+    for (int i = 1; i <= n; i++) p[i] = i;
+    function<int(int)> find = [&](int x) {
+        if (p[x] != x) p[x] = find(p[x]);
+        return p[x];
+    };
+    auto unite = [&](int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return;
+        if (px < py) swap(px, py);
+        p[px] = py;
+    };
+    bool flag = false;
+    for (int i = 2; i <= n; i += 2) {
+        cin >> b[i];
+        if (++cnt[b[i]] > 1) flag = true;
+        unite(b[i], b[i]-1);
+    }
+    if (flag || cnt[1] || cnt[n] == 0) {
+        cout << "-1" << endl;
+        return;
+    }
+    for (int i = n; i > 0; i -= 2) {
+        int t = find(b[i]);
+        if (t) {
+            b[i-1] = t;
+            unite(t, t-1);
+        } else {
+            cout << "-1" << endl;
+            return;
+        }
+    }
+    for (int i = 1; i <= n; i++) cout << b[i] << " ";
+    cout << endl;
+}
+
 int main() {
 
 #ifdef debug
@@ -56,7 +98,7 @@ int main() {
     int T = 1;
     // scanf("%d", &T);
     cin >> T;
-    while (T--) solve();
+    while (T--) solve2();
 
     return 0;
 }
