@@ -39,7 +39,6 @@ void solve() {
     function<void(int, int)> dfs = [&](int l, int r) {
         if (l > r) return;
         ans[l] = func(l), ans[r] = func(r);
-        // printf("%d,%d,%d,%d\n", l, r, a[l], a[r]);
         if (ans[l] == ans[r]) {
             for (int i = l+1; i < r; i++) ans[i] = ans[l];
             return;
